@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "update": "chmod a+x updategitdependency.sh && ./updategitdependency.sh",
-    "build": "chmod a+x buildtestimage.sh && ./buildtestimage.sh c3pobot-old/syncworker",
-    "prod": "chmod a+x buildprodimage.sh && ./buildprodimage.sh c3pobot-old/syncworker"
+    "build": "chmod a+x buildtestimage.sh && ./buildtestimage.sh c3pobot/syncworker",
+    "prod": "chmod a+x buildprodimage.sh && ./buildprodimage.sh c3pobot/syncworker"
   },
   "repository": {
     "type": "git",
