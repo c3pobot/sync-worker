@@ -1,0 +1,32 @@
+{
+  "name": "syncworker",
+  "version": "1.0.0",
+  "description": "swgoh-sync",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update": "chmod a+x updategitdependency.sh && ./updategitdependency.sh",
+    "build": "chmod a+x buildtestimage.sh && ./buildtestimage.sh c3pobot-old/syncworker",
+    "prod": "chmod a+x buildprodimage.sh && ./buildprodimage.sh c3pobot-old/syncworker"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/c3po1/swgoh-sync.git"
+  },
+  "author": "scuba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/c3po1/swgoh-sync/issues"
+  },
+  "homepage": "https://gitlab.com/c3po1/swgoh-sync#readme",
+  "dependencies": {
+    "botrequest": "github:c3pobot/botrequest",
+    "bull": "^4.10.4",
+    "json-array-sorter": "0.0.5",
+    "logger": "github:c3pobot/logger",
+    "mongoapiclient": "github:c3pobot/mongoapiclient",
+    "node-fetch": "^2.6.7",
+    "numeral": "^2.0.6",
+    "redisclient": "github:c3pobot/redisclient"
+  }
+}
