@@ -46,20 +46,23 @@ module.exports = async(obj = {}, gObj = {})=>{
       let guildMsg = ''
       let lowTicketMsg = "Hi! If you are online, Please get your "+ticketCount+" done!\nCurrent Ticket Count : "
       let momWatchMember = []
+      if(obj.skipMessageSending) guildMsg += 'Sending messages to players is disabled via settings\n'
       for (let i in member) {
         if (momWatch && momWatch.filter(x => x.playerId === member[i].playerId).length > 0) momWatchMember.push(member[i]);
-        let discordId = await GetPlayerDiscordId(member[i].playerId)
-        if (discordId) {
-          let payload = { sId: sId, msg: { content: lowTicketMsg + member[i].tickets+' for '+member[i].name }, dId: discordId}
-          if(!payload.sId) payload.podName = `${BOT_NODE_NAME_PREFIX}-0`
-          let status = await botRequest('sendDM', payload )
-          if(status?.id){
-            guildMsg += 'message sent to ' + member[i].name+'\n'
-          }else{
-            guildMsg += 'unable to send a DM to ' + member[i].name+'\n'
+        if(!obj.skipMessageSending){
+          let discordId = await GetPlayerDiscordId(member[i].playerId)
+          if (discordId) {
+            let payload = { sId: sId, msg: { content: lowTicketMsg + member[i].tickets+' for '+member[i].name }, dId: discordId}
+            if(!payload.sId) payload.podName = `${BOT_NODE_NAME_PREFIX}-0`
+            let status = await botRequest('sendDM', payload )
+            if(status?.id){
+              guildMsg += 'message sent to ' + member[i].name+'\n'
+            }else{
+              guildMsg += 'unable to send a DM to ' + member[i].name+'\n'
+            }
+          } else {
+            guildMsg += member[i].name + ' does not have allyCode linked to discordId\n'
           }
-        } else {
-          guildMsg += member[i].name + ' does not have allyCode linked to discordId\n'
         }
       }
       if(momId && momWatchMember.length > 0){

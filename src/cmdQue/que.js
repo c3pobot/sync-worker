@@ -1,8 +1,10 @@
 'use strict'
 const log = require('logger')
+const Queue = require('bull')
+
 const cmdProcessor = require('./cmdProcessor')
 const processLocalQue = require('./processLocalQue')
-const Queue = require('bull')
+
 
 const QUE_NAME = process.env.CMD_QUE_NAME || 'guildQue'
 const NUM_JOBS = +process.env.NUM_JOBS || 1
@@ -50,7 +52,7 @@ module.exports.removeJob = async(jobId)=>{
   try{
     let job = await que.getJob(jobId)
     if(job){
-      await job.moveToCompleted(null, true, true)
+      //await job.moveToCompleted(null, true, true)
       await job.remove()
     }
   }catch(e){

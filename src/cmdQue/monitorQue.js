@@ -1,8 +1,9 @@
 'use strict'
 const log = require('logger')
 const redis = require('redisclient')
-const queName = process.env.SHARD_QUE_NAME || 'guildQue'
+const QUE_NAME = process.env.SHARD_QUE_NAME || 'guildQue'
 const Que = require('./que')
+/*
 let count = 0
 const removeJob = async(job)=>{
   try{
@@ -67,6 +68,63 @@ const Sync = async() =>{
     await forceClear()
     let id = await redis.get('bull:'+queName+':id')
     if(id && +id > 1000) redis.del('bull:'+queName+':id')
+
+    setTimeout(Sync, 5000)
+  }catch(e){
+    log.error(e)
+    setTimeout(Sync, 5000)
+  }
+}
+*/
+const jobFilter = ['failed', 'completed']
+const checkJobs = async()=>{
+  try{
+    let array = []
+    let jobs = await Que.getJobs()
+    for(let i in jobs){
+      let jobId = await checkJob(jobs[i])
+      if(jobId) array.push(jobs[i])
+    }
+    if(array?.length > 0) await clearJobs(array)
+  }catch(e){
+    log.error(`Error checking jobs...`)
+    log.error(e)
+  }
+}
+const checkJob = async(job)=>{
+  try{
+    if(!job) return
+    let state = await job.getState()
+    if(!state) return
+    if(jobFilter.filter(x=>x === state).length > 0) return job.id
+  }catch(e){
+    log.error(e)
+  }
+}
+const clearJobs = async(jobs = [])=>{
+  try{
+    console.log(`Killing ${jobs?.length} jobs...`)
+    for(let i in jobs) await clearJob(jobs[i])
+  }catch(e){
+    log.error(`Error clearing jobs...`)
+    log.error(e)
+  }
+}
+const clearJob = async(job)=>{
+  try{
+    if(!job) return
+    let state = await job.getState()
+    log.info(`Killing ${state} job ${job.id}...`)
+    await job.remove()
+  }catch(e){
+    log.error(e)
+  }
+}
+const Sync = async() =>{
+  try{
+    await checkJobs()
+    let id = await redis.get('bull:'+QUE_NAME+':id')
+    if(id && +id > 1000) redis.del('bull:'+QUE_NAME+':id')
 
     setTimeout(Sync, 5000)
   }catch(e){
