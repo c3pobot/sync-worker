@@ -1,26 +1,14 @@
 'use strict'
 const log = require('logger')
-const redis = require('redisclient')
-const Cmds = require('./cmds')
-
-const processJob = async(job = {})=>{
+const Cmds = require('src/cmds')
+const sleep = (ms = 5000)=>{ return new Promise(resolve=>{setTimeout(resolve, ms)})}
+module.exports = async(obj = {})=>{
   try{
-    let res
-    if(redis && process.env.LOCAL_QUE_KEY && job?.id) await redis.setTTL(process.env.LOCAL_QUE_KEY+'-'+job.id, job)
-    if(Cmds[job?.jobType]) res = await Cmds[job.jobType](job.data);
-    if(redis && process.env.LOCAL_QUE_KEY && job?.id) await redis.del(process.env.LOCAL_QUE_KEY+'-'+job.id)
-    return res;
-  }catch(e){
-    throw(e)
-  }
-}
-module.exports = async(job)=>{
-  try{
-    let obj = job?.data
-    if(!obj) return
-    if(job?.opts?.jobId) obj.id = job.opts.jobId
-    if(job?.timestamp) obj.timestamp = job.timestamp
-    return await processJob(obj)
+    if(!obj?.body?.name) return
+    log.debug(`${obj.body.name} processing started...`)
+    if(Cmds[obj.body.name]) await Cmds[obj.body.name](obj.body)
+    if(process.env.IS_TEST) await sleep(30000)
+    log.debug(`${obj.body.name} procssing done...`)
   }catch(e){
     log.error(e)
   }

@@ -15,6 +15,7 @@ const parseResponse = async(res)=>{
     } else {
       body = await res?.text()
     }
+    if(!body) body = res?.status
     return {
       status: res?.status,
       body: body

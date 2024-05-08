@@ -20,13 +20,11 @@
   },
   "homepage": "https://gitlab.com/c3po1/swgoh-sync#readme",
   "dependencies": {
-    "botrequest": "github:c3pobot/botrequest",
-    "bull": "^4.10.4",
     "json-array-sorter": "0.0.5",
     "logger": "github:c3pobot/logger",
-    "mongoapiclient": "github:c3pobot/mongoapiclient",
+    "mongoclient": "github:c3pobot/mongoclient",
     "node-fetch": "^2.6.7",
     "numeral": "^2.0.6",
-    "redisclient": "github:c3pobot/redisclient"
+    "rabbitmq-client": "^4.5.4"
   }
 }

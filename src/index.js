@@ -1,51 +1,54 @@
 'use strict'
 const log = require('logger')
-const redis = require('redisclient')
-const mongo = require('mongoapiclient')
-const swgohClient = require('./swgohClient')
-let logLevel = process.env.LOG_LEVEL || log.Level.INFO;
-log.setLevel(logLevel);
+const mongo = require('mongoclient')
 
-const CmdQue = require('./cmdQue')
-const CheckRedis = ()=>{
+let logLevel = process.env.LOG_LEVEL || log.Level.INFO;
+//log.setLevel('debug')
+
+const rabbitmq = require('./helpers/rabbitmq')
+const swgohClient = require('./swgohClient')
+require('./exchanges')
+const POD_NAME = process.env.POD_NAME || 'sync-worker'
+
+let cmdQue = require('./cmdQue')
+const checkRabbitmq = ()=>{
   try{
-    let status = redis.status()
-    if(status){
-      CheckMongo()
+    if(rabbitmq.ready){
+      checkMongo()
       return
     }
-    setTimeout(CheckRedis, 5000)
+    setTimeout(checkRabbitmq, 5000)
   }catch(e){
     log.error(e)
-    setTimeout(CheckRedis, 5000)
+    setTimeout(checkRabbitmq, 5000)
   }
 }
-const CheckMongo = ()=>{
+const checkMongo = ()=>{
   try{
     let status = mongo.status()
     if(status){
-      CheckAPIReady()
+      checkAPIReady()
       return
     }
-    setTimeout(CheckMongo, 5000)
+    setTimeout(checkMongo, 5000)
   }catch(e){
     log.error(e)
-    setTimeout(CheckMongo, 5000)
+    setTimeout(checkMongo, 5000)
   }
 }
-const CheckAPIReady = async()=>{
+const checkAPIReady = async()=>{
   try{
     let obj = await swgohClient('metadata')
     if(obj?.latestGamedataVersion){
-      log.info(`API is ready...`)
-      CmdQue.start()
+      log.info('API is ready ..')
+      await cmdQue.startConsumer()
       return
     }
-    log.info(`API is not ready...`)
-    setTimeout(CheckAPIReady, 5000)
+    log.info('API is not ready. Will try again in 5 seconds')
+    setTimeout(checkAPIReady, 5000)
   }catch(e){
     log.error(e)
-    setTimeout(CheckAPIReady, 5000)
+    setTimeout(checkAPIReady, 5000)
   }
 }
-CheckRedis()
+checkRabbitmq()
