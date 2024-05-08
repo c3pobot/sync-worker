@@ -10,7 +10,6 @@ const swgohClient = require('./swgohClient')
 const gameDataList = require('./helpers/gameDataList')
 
 require('./exchanges')
-const POD_NAME = process.env.POD_NAME || 'sync-worker'
 
 let cmdQue = require('./cmdQue')
 const checkRabbitmq = ()=>{

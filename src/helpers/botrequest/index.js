@@ -2,7 +2,7 @@
 const log = require('logger')
 const fetch = require('./fetch')
 const { getPodName, getNumShards } = require('./botInfo')
-let BOT_SVC = process.env.BOT_SVC || 'bot', BOT_SVC_PORT = process.env.BOT_SVC_PORT || 3000, BOT_SET_NAME = process.env.BOT_SET_NAME || 'bot', BOT_NAMESPACE = process.env.BOT_NAMESPACE || 'default'
+let BOT_SVC = process.env.BOT_SVC || 'bot', BOT_SVC_PORT = process.env.BOT_SVC_PORT || 3000, BOT_SET_NAME = process.env.BOT_SET_NAME || 'bot', BOT_NAMESPACE = process.env.BOT_NAMESPACE || process.env.NAME_SPACE || 'default'
 const retryCount = 7
 
 const requestWithRetry = async(uri, opts = {}, count = 0)=>{

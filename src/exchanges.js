@@ -9,8 +9,8 @@ const cmdQue = require('./cmdQue')
 
 let POD_NAME = process.env.POD_NAME || 'sync-worker', NAME_SPACE = process.env.NAME_SPACE || 'default', WORKER_TYPE = process.env.WORKER_TYPE || 'guild'
 let QUE_NAME = `${NAME_SPACE}.${POD_NAME}.topic`
-let SET_EXCHANGE = process.env.BOT_SET_EXCHANGE || 'k8-status', DATA_EXCHANGE_NAME = process.env.GAME_DATA_EXCHANGE || `game-data`, CONTROL_EXCHANGE_NAME = process.env.CONTROL_EXCHANGE_NAME || 'control'
-let SET_ROUTING_KEY = process.env.BOT_SET_TOPIC || `statefulset.default.bot`, DATA_ROUTING_KEY = process.env.GAME_DATA_TOPIC || `default.data-sync.game-data`
+let SET_EXCHANGE = process.env.BOT_SET_EXCHANGE || 'k8-status', DATA_EXCHANGE_NAME = process.env.GAME_DATA_EXCHANGE || `data-sync`, CONTROL_EXCHANGE_NAME = process.env.CONTROL_EXCHANGE_NAME || 'control'
+let SET_ROUTING_KEY = process.env.BOT_SET_TOPIC || `statefulset.${NAME_SPACE}.bot`, DATA_ROUTING_KEY = process.env.GAME_DATA_TOPIC || `${NAME_SPACE}.${DATA_EXCHANGE_NAME}.game-data`
 let CONTROL_ROUTING_KEY = `${NAME_SPACE}.${CONTROL_EXCHANGE_NAME}.${WORKER_TYPE}`
 
 let exchanges = [{ exchange: SET_EXCHANGE, durable: true, type: 'topic'}, { exchange: DATA_EXCHANGE_NAME, durable: true, type: 'topic'}, { exchange: CONTROL_EXCHANGE_NAME, durable: true, type: 'topic'}]
@@ -40,7 +40,7 @@ const startConsumer = async()=>{
       queue: QUE_NAME,
       exchanges: exchanges,
       queueBindings: queueBindings,
-      queueOptions: { queue: QUE_NAME, durable: true, arguments: { 'x-queue-type': 'quorum', 'x-message-ttl': 6000 } }
+      queueOptions: { queue: QUE_NAME, durable: false, exclusive: true, arguments: { 'x-message-ttl': 6000 } }
     }, cmdProcessor)
     consumer.on('error', (err)=>{
       log.info(err)

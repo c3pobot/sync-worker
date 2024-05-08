@@ -2,7 +2,7 @@
 const log = require('logger')
 const rabbitmq = require('src/helpers/rabbitmq')
 const cmdProcessor = require('./cmdProcessor')
-let QUE_NAME = process.env.NAME_SPACE || 'default', POD_NAME = process.env.POD_NAME || 'sync-worker', consumer, WORKER_TYPE = process.env.WORKER_TYPE || 'guild'
+let QUE_NAME = process.env.WORKER_QUE_NAME_SPACE || process.env.NAME_SPACE || 'default', POD_NAME = process.env.POD_NAME || 'sync-worker', consumer, WORKER_TYPE = process.env.WORKER_TYPE || 'guild'
 QUE_NAME += `.sync.${WORKER_TYPE}`
 
 const processCmd = async(obj = {})=>{
