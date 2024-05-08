@@ -2,8 +2,8 @@
 const log = require('logger')
 const rabbitmq = require('src/helpers/rabbitmq')
 const cmdProcessor = require('./cmdProcessor')
-let QUE_NAME = process.env.WORKER_QUE_NAME_SPACE || 'default', POD_NAME = process.env.POD_NAME || 'sync-worker', consumer, publisher, publisherReady, WORKER_TYPE = process.env.WORKER_TYPE || 'guild'
-QUE_NAME += `.worker.${WORKER_TYPE}`
+let QUE_NAME = process.env.NAME_SPACE || 'default', POD_NAME = process.env.POD_NAME || 'sync-worker', consumer, WORKER_TYPE = process.env.WORKER_TYPE || 'guild'
+QUE_NAME += `.sync.${WORKER_TYPE}`
 
 const processCmd = async(obj = {})=>{
   try{
@@ -26,13 +26,8 @@ const start = async()=>{
   return true
 }
 module.exports.start = start
-module.exports.send = async(payload = {})=>{
-  if(!publisherReady) return
-  await publisher.send(QUE_NAME, payload )
-  return true
-}
 module.exports.restart = (data)=>{
   if(!data || data?.set !== WORKER_TYPE || data?.cmd !== 'restart') return
   log.info(`${POD_NAME} received a consumer restart cmd...`)
-  start()
+  setTimeout(start, 5000)
 }

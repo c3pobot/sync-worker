@@ -1,7 +1,7 @@
 'use strict'
 const log = require('logger')
 const fetch = require('./fetch')
-const BOT_NAMESPACE = process.env.BOT_NAMESPACE || 'default', BOT_SET_NAME = process.env.BOT_SET_NAME || 'bot', BOT_SVC = process.env.BOT_SVC || 'bot', BOT_SVC_PORT = process.env.BOT_SVC_PORT || 3000
+const BOT_NAMESPACE = process.env.BOT_NAMESPACE || process.env.NAME_SPACE || 'default', BOT_SET_NAME = process.env.BOT_SET_NAME || 'bot', BOT_SVC = process.env.BOT_SVC || 'bot', BOT_SVC_PORT = process.env.BOT_SVC_PORT || 3000
 let NUM_SHARDS = 0
 
 const start = async()=>{

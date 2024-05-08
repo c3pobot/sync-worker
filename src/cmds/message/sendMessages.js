@@ -2,12 +2,16 @@
 const log = require('logger')
 const mongo = require('mongoclient')
 const botRequest = require('src/helpers/botrequest')
-const cache = require('src/helpers/cache')
 const getLowTickets = require('./getLowTickets')
 
+const checkCache = async(playerId)=>{
+  if(!playerId) return
+  let player = (await mongo.find('playerIdCache', { _id: playerId}, {_id: 0, TTL: 0}))[0]
+  if(player?.allyCode) return player
+}
 const getMember = async(playerId, name, memberContribution)=>{
   try{
-    let obj = await cache.playerId.get(playerId)
+    let obj = await checkCache(playerId)
     if(!obj?.allyCode) obj = await swgohClient.post('playerArena', { playerId: playerId, playerDetailsOnly: true } )
     if(obj?.allyCode){
       let dObj = (await mongo.find('discordId', {'allyCodes.playerId': playerId}))[0]
