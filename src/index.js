@@ -3,7 +3,6 @@ const log = require('logger')
 const mongo = require('mongoclient')
 
 let logLevel = process.env.LOG_LEVEL || log.Level.INFO;
-log.setLevel('debug')
 
 const rabbitmq = require('./helpers/rabbitmq')
 const swgohClient = require('./swgohClient')
