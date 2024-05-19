@@ -1,9 +1,6 @@
 'use strict'
 const log = require('logger')
 const mongo = require('mongoclient')
-
-let logLevel = process.env.LOG_LEVEL || log.Level.INFO;
-
 const rabbitmq = require('./helpers/rabbitmq')
 const swgohClient = require('./swgohClient')
 const gameDataList = require('./helpers/gameDataList')

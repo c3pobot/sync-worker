@@ -42,6 +42,7 @@ module.exports = async(cmd, opts = {})=>{
   if(!cmd) return
   let podName = opts.podName
   if(!podName) podName = getPodName(opts.sId)
+  if(!podName && cmd == 'sendDM') podName = `${BOT_SET_NAME}-0`
   if(!podName) return
   if(podName === 'all') return await allBotRequest(cmd, opts)
   return await singleBotRequest(cmd, podName, opts)
