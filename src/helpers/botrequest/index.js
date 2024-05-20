@@ -28,8 +28,8 @@ const allBotRequest = async(cmd, opts = {})=>{
   let array = [], res = [], i = getNumShards(), count = 0
   if(!i) return
   while(count<i){
-    array.push(singleBotRequest(`${BOT_SET_NAME}-${count}`, opts))
-    i++
+    array.push(singleBotRequest(cmd, `${BOT_SET_NAME}-${count}`, opts))
+    count++
   }
   let tempRes = await Promise.allSettled(array)
   for(let i in tempRes){
