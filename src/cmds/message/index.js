@@ -7,7 +7,7 @@ const send = require('./send')
 module.exports = async(data = {})=>{
   //data format { name: 'message', guildId: guildId }
   let guild = (await mongo.find('guilds', {_id: data.guildId }, { auto: 1, sync: 1 }))[0]
-  if(!guild.auto) return
+  if(!guild?.auto) return
 
   if(guild.auto.hours >= 0 && guild.auto.mins >= 0 && guild.auto.chId && guild.auto.sId && guild.auto.guildId && guild.auto.status){
     let tempTimeNow = Date.now();
