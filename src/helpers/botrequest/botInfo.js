@@ -8,10 +8,9 @@ const start = async()=>{
   try{
     let opts = { method: 'GET', timeout: 60000, compress: true }
     let res = await fetch(`http://${BOT_SET_NAME}-${0}.${BOT_SVC}.${BOT_NAMESPACE}:${BOT_SVC_PORT}/getNumShards`, opts)
-    if(res?.body?.totalShards > 0){
+    if(res?.body?.totalShards > 0 && res?.body?.totalShards !== NUM_SHARDS){
       NUM_SHARDS = +res.body.totalShards
       log.info(`Set Number of bot shards to ${NUM_SHARDS}...`)
-      return
     }
     setTimeout(start, 5000)
   }catch(e){
