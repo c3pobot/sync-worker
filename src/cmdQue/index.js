@@ -8,10 +8,10 @@ QUE_NAME += `.sync.${WORKER_TYPE}`
 const processCmd = async(obj = {})=>{
   try{
     await cmdProcessor(obj)
-    return 1
+    //return 1
   }catch(e){
     log.error(e)
-    return 1
+    //return 1
   }
 }
 const start = async()=>{
