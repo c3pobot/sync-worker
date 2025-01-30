@@ -16,7 +16,7 @@ const processCmd = async(obj = {})=>{
 }
 const start = async()=>{
   if(consumer) await consumer.close()
-  consumer = rabbitmq.createConsumer({ consumerTag: POD_NAME, concurrency: 1, qos: { prefetchCount: 1 }, queue: QUE_NAME, queueOptions: { durable: true, arguments: { 'x-queue-type': 'quorum' } } }, processCmd)
+  consumer = rabbitmq.createConsumer({ consumerTag: POD_NAME, concurrency: 1, qos: { prefetchCount: 1 }, queue: QUE_NAME }, processCmd)
   consumer.on('error', (err)=>{
     log.info(err)
   })
