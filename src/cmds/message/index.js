@@ -1,12 +1,15 @@
 'use strict'
+const log = require('logger')
 const mongo = require('mongoclient')
 
 const checkMissed = require('./checkMissed')
 const send = require('./send')
 
 module.exports = async(data = {})=>{
-  //data format { name: 'message', guildId: guildId }
-  let guild = (await mongo.find('guilds', {_id: data.guildId }, { auto: 1, sync: 1 }))[0]
+  //data format { name: 'message', id: guildId }
+  log.debug(`Started message sync for guild ${data.id}`)
+  if(process.env.IS_TEST) return
+  let guild = (await mongo.find('guilds', {_id: data.id }, { auto: 1, sync: 1 }))[0]
   if(!guild?.auto) return
 
   if(guild.auto.hours >= 0 && guild.auto.mins >= 0 && guild.auto.chId && guild.auto.sId && guild.auto.guildId && guild.auto.status){

@@ -5,12 +5,13 @@ const swgohClient = require('src/swgohClient')
 const getPlayers = require('src/helpers/getPlayers')
 const formatGuild = require('src/helpers/formatGuild')
 
-module.exports = async(obj = {} )=>{
+module.exports = async(data = {} )=>{
   try{
-    //data format { name: 'guild', guildId: guildId }
-    if(!obj.guildId) return
+    //data format { name: 'guild', id: guildId }
+    log.debug(`Started sync of guild ${data.id}`)
+    if(process.env.IS_TEST) return
     let timeStart = Date.now()
-    let guild = await swgohClient('guild', { guildId: obj.guildId, includeRecentGuildActivityInfo: true })
+    let guild = await swgohClient('guild', { guildId: data.id, includeRecentGuildActivityInfo: true })
     guild = guild?.guild
     if(!guild?.member) return
     guild.member = guild.member.filter(x=>x.memberLevel > 1)
@@ -20,7 +21,7 @@ module.exports = async(obj = {} )=>{
     if(guild?.member?.length !== members?.length) return
     formatGuild(guild, members)
     if(!guild.gp) return
-    await mongo.set('guildCache', { _id: obj.guildId }, guild)
+    await mongo.set('guildCache', { _id: data.id }, guild)
   }catch(e){
     log.error(e)
   }
