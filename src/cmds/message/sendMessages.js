@@ -47,12 +47,8 @@ module.exports = async(obj = {}, gObj = {})=>{
       if (momWatch?.filter(x => x.playerId === member[i].playerId).length > 0) momWatchMember.push(member[i]);
       if(obj.skipMessageSending) continue
       if(member[i]?.dId){
-        let status = await botRequest('sendDM', { sId: obj.sId, dId: member[i]?.dId, msg: { content: `${lowTicketMsg}\n${member[i].name} : ${member[i].tickets}` }})
-        if(status?.id){
-          guildMsg += 'message sent to ' + member[i].name+'\n'
-        }else{
-          guildMsg += 'unable to send a DM to ' + member[i].name+'\n'
-        }
+        botRequest('sendDM', { sId: obj.sId, dId: member[i]?.dId, msg: { content: `${lowTicketMsg}\n${member[i].name} : ${member[i].tickets}` }})
+        guildMsg += 'message sent to ' + member[i].name+'\n'
       }else{
         guildMsg += member[i].name + ' does not have allyCode linked to discordId\n'
       }
