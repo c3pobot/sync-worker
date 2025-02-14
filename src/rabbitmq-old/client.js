@@ -1,6 +1,7 @@
 'use strict'
 const log = require('logger');
 const rabbitmq = require('rabbitmq-client');
+const reportError = require('src/reportError')
 
 const POD_NAME = process.env.POD_NAME || 'sync-worker'
 const connectOptions = {
@@ -12,7 +13,7 @@ const connectOptions = {
 }
 const client = new rabbitmq.Connection(connectOptions)
 client.on('error', (err)=>{
-  log.error(err)
+  reportError(err)
 })
 client.on('connection', ()=>{
   log.info(`${POD_NAME} rabbitmq client connected...`)
