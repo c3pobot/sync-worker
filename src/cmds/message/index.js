@@ -20,6 +20,8 @@ module.exports = async(data = {})=>{
     tempResetTime.setUTCSeconds(0)
     tempResetTime.setUTCMilliseconds(0)
     let timeTillReset = (+tempResetTime.getTime() - +tempTimeNow)
+    if(timeTillReset < 0) tempResetTime = new Date(tempResetTime.getTime() + (86400 * 1000))
+    timeTillReset = (+tempResetTime.getTime() - +tempTimeNow)
     if (tempResetTime.getTime() > tempTimeNow && timeTillReset < 7200000) {
       if (!guild.auto.sent) await send(guild.auto)
     }else{
