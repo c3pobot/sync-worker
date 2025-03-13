@@ -5,6 +5,7 @@ const mongo = require('mongoclient')
 const checkMissed = require('./checkMissed')
 const send = require('./send')
 
+
 module.exports = async(data = {})=>{
   //data format { name: 'message', id: guildId }
   log.debug(`Started message sync for guild ${data.id}`)
@@ -22,6 +23,7 @@ module.exports = async(data = {})=>{
     let timeTillReset = (+tempResetTime.getTime() - +tempTimeNow)
     if(timeTillReset < 0) tempResetTime = new Date(tempResetTime.getTime() + (86400 * 1000))
     timeTillReset = (+tempResetTime.getTime() - +tempTimeNow)
+
     if (tempResetTime.getTime() > tempTimeNow && timeTillReset < 7200000) {
       if (!guild.auto.sent) await send(guild.auto)
     }else{
@@ -38,7 +40,15 @@ module.exports = async(data = {})=>{
     }else{
       if(guild.auto.followup > 0 && (tempResetTime.getTime() < tempTimeNow || timeDiff > 14400000)) await mongo.set('guilds', { _id: guild.auto.guildId }, { 'auto.followup': 0 })
     }
-    if(timeDiff < 86400000 && timeDiff > 72000000){
+    
+    let tempMissedTime = new Date()
+    tempMissedTime.setUTCHours(guild.auto.hours)
+    tempMissedTime.setUTCMinutes(guild.auto.mins)
+    tempMissedTime.setUTCSeconds(0)
+    tempMissedTime.setUTCMilliseconds(0)
+    let missedTimeDiff = (tempMissedTime.getTime() + 86460000) - tempTimeNow
+
+    if(missedTimeDiff < 86400000 && missedTimeDiff > 72000000){
       if(!guild.auto.missed) await checkMissed(guild.auto)
     }else{
       if(guild.auto.missed > 0) mongo.set('guilds', { _id: guild.auto.guildId }, { 'auto.missed': 0 })
